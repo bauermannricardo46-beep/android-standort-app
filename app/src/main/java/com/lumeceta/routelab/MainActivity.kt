@@ -14,11 +14,17 @@ class MainActivity : ComponentActivity() {
             MaterialTheme(
                 colorScheme = darkColorScheme(
                     primary = Color(0xFF00D9FF),
-                    secondary = Color(0xFF63F2D2),
-                    background = Color(0xFF070A10),
-                    surface = Color(0xFF111722)
+                    onPrimary = Color(0xFF00131B),
+                    secondary = Color(0xFF8B6CFF),
+                    onSecondary = Color.White,
+                    background = Color(0xFF050A16),
+                    onBackground = Color.White,
+                    surface = Color(0xFF101827),
+                    onSurface = Color.White
                 )
-            ) { RouteLabScreen() }
+            ) {
+                RouteLabScreen()
+            }
         }
     }
 }
