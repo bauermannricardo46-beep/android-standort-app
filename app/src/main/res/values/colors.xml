@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="naviflux_bg">#050A16</color>
+    <color name="naviflux_cyan">#00D9FF</color>
+    <color name="naviflux_blue">#1468F5</color>
+    <color name="naviflux_violet">#7C4DFF</color>
+    <color name="naviflux_panel">#101827</color>
+</resources>
