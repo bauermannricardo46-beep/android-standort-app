@@ -1,10 +1,19 @@
-# RouteLab GPS Simulator
+# NaviFlux · Route Studio
 
-Android project for testing simulated location routes on Samsung/Android devices.
+NaviFlux is an Android app for building and previewing routes on an OpenStreetMap map.
 
-## Project delivery
+## Version 2.0
 
-This repository includes a GitHub Actions workflow for building and packaging the Android debug APK. The workflow requires the Android Studio project files: Kotlin sources, Gradle build files, Gradle wrapper, manifest and tests.
+- Interactive OpenStreetMap view.
+- Tap the map to choose the start and destination.
+- Start/end coordinates and straight-line distance.
+- Adjustable in-app marker playback with pause and reset.
+- Dark neon interface and a custom adaptive app icon.
+- No device-location permission and no system-wide mock-location provider.
+
+**Route note:** the preview connects the chosen points with a straight line. It is a visual route lab, not turn-by-turn road navigation. The animated marker moves only inside NaviFlux and does not change the location seen by other apps.
+
+Map data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright). Map tiles require an internet connection.
 
 ## Build locally
 
@@ -14,18 +23,8 @@ Use Android Studio with JDK 17 and Android SDK Platform 35 installed. Run:
 ./gradlew test assembleDebug
 ```
 
-On Windows, use `gradlew.bat test assembleDebug`.
+The APK is generated at `app/build/outputs/apk/debug/app-debug.apk`.
 
-The APK is expected at `app/build/outputs/apk/debug/app-debug.apk` after a successful build.
+## GitHub Actions and releases
 
-## Enable a mock location on Samsung
-
-1. Open Settings → About phone → Software information.
-2. Tap Build number seven times and confirm your device PIN if asked.
-3. Open Settings → Developer options.
-4. Select RouteLab as the mock location app after installing it.
-5. Use mock locations for legitimate testing. Android marks simulated locations, and individual apps may detect or reject them.
-
-## GitHub Actions
-
-The workflow in `.github/workflows/android-release.yml` runs on pushes to `main`, version tags such as `v0.1.0`, and manual dispatch. Version-tag builds attach the generated APK to a GitHub Release if the project builds successfully.
+Pushing a version branch such as `release/v2.0.0` builds and tests the app, uploads the APK artifact, and publishes a matching GitHub Release (`v2.0.0`) when the build succeeds. Pushing a version tag like `v2.1.0` also builds and publishes a release.
