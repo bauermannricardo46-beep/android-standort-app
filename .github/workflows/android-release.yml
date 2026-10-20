@@ -2,7 +2,7 @@ name: Android APK Release
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'feature/**']
     tags: ['v*']
   workflow_dispatch:
 
@@ -29,15 +29,15 @@ jobs:
 
       - name: Validate project files
         run: |
-          test -f settings.gradle.kts || test -f settings.gradle
-          test -f build.gradle.kts || test -f build.gradle
-          test -f gradlew
+          test -f settings.gradle.kts
+          test -f build.gradle.kts
+          test -f gradle/wrapper/gradle-wrapper.properties
+          test -f app/build.gradle.kts
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
-
-      - name: Run unit tests and build debug APK
-        run: ./gradlew --no-daemon test assembleDebug
+      - name: Build and test with Gradle
+        run: |
+          gradle --version
+          gradle --no-daemon test assembleDebug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
