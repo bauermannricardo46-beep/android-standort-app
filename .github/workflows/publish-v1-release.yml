@@ -1,0 +1,53 @@
+name: Publish RouteLab v1.0.0
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check whether v1.0.0 already exists
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if gh release view v1.0.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download verified APK from successful build
+        if: steps.release.outputs.exists != 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: RouteLab-debug-apk
+          path: dist
+          run-id: 39457997279
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify APK artifact
+        if: steps.release.outputs.exists != 'true'
+        run: |
+          test -s dist/app-debug.apk
+          file dist/app-debug.apk
+
+      - name: Publish GitHub Release with APK
+        if: steps.release.outputs.exists != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0
+          target_commitish: ${{ github.sha }}
+          name: RouteLab GPS Simulator v1.0.0
+          body: |
+            RouteLab GPS Simulator for Android.
+
+            This debug build is intended for development and mock-location testing. Simulated locations remain identifiable by Android, and individual apps may detect or reject them. Physical-device testing on Samsung remains outstanding.
+          files: dist/app-debug.apk
+          generate_release_notes: true
