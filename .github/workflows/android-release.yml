@@ -35,8 +35,7 @@ jobs:
           test -f app/build.gradle.kts
 
       - name: Build and test with Gradle
-        run: |
-          gradle --no-daemon test assembleDebug
+        run: gradle --no-daemon test assembleDebug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
@@ -46,22 +45,8 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Publish GitHub Release from main
-        if: github.ref == 'refs/heads/main'
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v1.0.0
-          target_commitish: ${{ github.sha }}
-          name: RouteLab GPS Simulator v1.0.0
-          body: |
-            Android debug APK for the RouteLab GPS Simulator.
-            
-            This build is intended for development and mock-location testing. Android identifies simulated locations, and individual apps may reject them.
-          files: app/build/outputs/apk/debug/*.apk
-          generate_release_notes: true
-
       - name: Publish GitHub Release for pushed version tag
-        if: startsWith(github.ref, 'refs/tags/v') && github.ref != 'refs/tags/v1.0.0'
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: app/build/outputs/apk/debug/*.apk
