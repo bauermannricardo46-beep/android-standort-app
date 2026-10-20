@@ -119,9 +119,11 @@ fun RouteLabScreen() {
         if (isPlaying) {
             if (progress >= 1f) progress = 0f
             val initialProgress = progress
+            // Keep playback duration consistent with the selected km/h speed.
+            // This is an in-app straight-line preview, not a system location feed.
             val durationMs = (
                 distanceKm(startPoint, endPoint) / speedKmh.toDouble().coerceAtLeast(1.0) * 3_600_000.0
-            ).coerceIn(8_000.0, 120_000.0).toLong()
+            ).coerceAtLeast(1.0).toLong()
             val beganAt = SystemClock.elapsedRealtime()
             while (isPlaying && progress < 1f) {
                 val portion = ((SystemClock.elapsedRealtime() - beganAt).toDouble() / durationMs)
@@ -297,7 +299,17 @@ fun RouteLabScreen() {
                             Text("Vorschaugeschwindigkeit", color = Muted, fontSize = 12.sp)
                             Text("${speedKmh.toInt()} km/h", color = Cyan, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                         }
-                        Text(String.format(java.util.Locale.US, "%.2f km", distance), color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(String.format(java.util.Locale.US, "%.2f km", distance), color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                            val etaSeconds = (distance / speedKmh.toDouble().coerceAtLeast(1.0) * 3600.0).toLong()
+                            val etaMinutes = etaSeconds / 60
+                            val etaRemainderSeconds = etaSeconds % 60
+                            Text(
+                                "Dauer %.2d:%02d".format(etaMinutes, etaRemainderSeconds),
+                                color = Muted,
+                                fontSize = 11.sp
+                            )
+                        }
                     }
                     Slider(
                         value = speedKmh,
